@@ -1,0 +1,39 @@
+pip install flask-login
+
+from flask_login import LoginManager
+
+app = Flask(__name__)
+login = LoginManager(app)
+
+
+Flask-Login插件需要在用户模型上实现某些属性和方法。这种做法很棒，因为只要将这些必需项添加到模型中，
+Flask-Login就没有其他依赖了，它就可以与基于任何数据库系统的用户模型一起工作。
+
+*   `is_authenticated`: 一个用来表示用户是否通过登录认证的属性，用`True`和`False`表示。
+
+*   `is_active`: 如果用户账户是活跃的，那么这个属性是`True`，否则就是`False`（
+    译者注：活跃用户的定义是该用户的登录状态是否通过用户名密码登录，通过“记住我”功能保持登录状态的用户是非活跃的）。
+
+*   `is_anonymous`: 常规用户的该属性是`False`，对特定的匿名用户是`True`。
+
+*   `get_id()`: 返回用户的唯一id的方法，返回值类型是字符串(Python 2下返回unicode字符串).
+
+
+使用UserMixin将这四个属性添加进User类中
+from flask_login import UserMixin
+
+class User(UserMixin, db.Model):
+    ......
+
+在models.py文件中直接添加：
+from app import login
+
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))
+
+Flask_login的 @login.user_loader 装饰器来为用户加载功能注册函数。
+load_user函数是为了加载给定id的用户
+
+Flask-Login使用名为`@login_required`的装饰器来拒绝匿名用户的访问以保护某个视图函数。
+当你将此装饰器添加到位于`@app.route`装饰器下面的视图函数上时，该函数将受到保护，不允许未经身份验证的用户访问。

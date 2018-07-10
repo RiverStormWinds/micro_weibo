@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Edit Profile</h1>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            <input type="file" id="file" onchange="upload(this.files[0])" style="display: none"><br>
+
+            {% if user.icon_path %}
+                <img class="disimg" onclick="file.click()" width="128px" height="80px" src="{{ user.icon_path }}">
+            {% else %}
+                <img class="disimg" onclick="file.click()" width="128px" height="80px" src="{{ user.avatar(128) }}">
+            {% endif %}
+        </p>
+        <p>
+            {{ form.username.label }}<br>
+            {{ form.username(size=32) }}<br>
+            {% for error in form.username.errors %}
+                <span style="color: lightcoral;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.about_me.label }}<br>
+            {{ form.about_me(cols=50, rows=4) }}<br>
+            {% for error in form.about_me.errors %}
+                <span style="color: lightcoral;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+<script>
+
+function upload(file) {
+    //上传文件
+    var xhr = new XMLHttpRequest();
+    xhr.open('post','/upload', true);
+    xhr.onload = function (ev) {
+        if(xhr.status == 200 && xhr.readyState==4){
+            data = xhr.responseText;
+            console.log(xhr.responseText);
+            $('.disimg').attr('src', data);
+        }
+    };
+
+    var formdata = new FormData();
+    formdata.append('img',file);
+    xhr.send(formdata);
+}
+
+</script>
+{% endblock %}
+

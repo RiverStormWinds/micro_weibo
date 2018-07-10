@@ -1,0 +1,28 @@
+<table class="table table-hover">
+    <tr>
+        <td width="70px">
+            <a href="{{ url_for('user.users', username=post.author.username) }}">
+                {% if post.author.icon_path %}
+                <img width="70px" height="40px" src="{{ post.author.icon_path }}">
+                {% else %}
+                <img src="{{ post.author.avatar(70) }}"/>
+                {% endif %}
+            </a>
+        </td>
+        <td>
+            {{ moment(post.timestamp).format('LLL') }}<br>
+
+            <a href="{{ url_for('user.users', username=post.author.username) }}">
+                {{ post.author.username }}
+                said:
+            </a>
+            <br>
+            {{ post.body }}
+            <br>
+            {% if user %}
+            <a href="{{ url_for('user.del_msg', username=post.author.username, post=post.body) }}">Del Msg</a>
+            {% endif %}
+        </td>
+    </tr>
+</table>
+

@@ -1,0 +1,89 @@
+
+{% extends 'bootstrap/base.html' %}
+{% block scripts %}
+    {{ super() }}
+    {{ moment.include_moment() }}
+{% endblock %}
+
+{% block title %}
+    {% if title %}{{ title }} - Microblog{% else %}Welcome to Microblog{% endif %}
+{% endblock %}
+
+{% block navbar %}
+    <nav class="navbar navbar-default">
+        <div>Microblog:
+            <a href="{{ url_for('user.index') }}">Home</a>
+            {% if current_user.is_anonymous %}
+                <a href="{{ url_for('user.login') }}">Login</a>
+            {% else %}
+                <a href="{{ url_for('user.users', username=current_user.username) }}">Profile</a>
+                <a href="{{ url_for('user.logout') }}">Logout</a>
+                <a href="{{ url_for('user.explore') }}">Explore</a>
+            {% endif %}
+        </div>
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-info" role="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {# application content needs to be provided in the app_content block #}
+        {% block app_content %}
+
+        {% endblock %}
+    </div>
+{% endblock %}
+
+
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{##}
+{# 头部处理信息，如果return render携带title字段，则输出，如果没有，则输出 welcome to the junjle #}
+{#    {% if title %}#}
+{#        <title>{{ title }} - Microblog</title>#}
+{#    {% else %}#}
+{#        <title>welcome to the junjle</title>#}
+{#    {% endif %}#}
+{#</head>#}
+{#<body>#}
+{##}
+{# 微博的基础链接输出，包含用户个人中心链接，用户登陆链接，用户信息链接，用户登出链接等 #}
+{#<div>Microblog:#}
+{#    <a href="{{ url_for('user.index') }}">Home</a>#}
+{#    {% if current_user.is_anonymous %}#}
+{#        <a href="{{ url_for('user.login') }}">Login</a>#}
+{#    {% else %}#}
+{#        <a href="{{ url_for('user.users', username=current_user.username) }}">Profile</a>#}
+{#        <a href="{{ url_for('user.logout') }}">Logout</a>#}
+{#        <a href="{{ url_for('user.explore') }}">Explore</a>#}
+{#    {% endif %}#}
+{#</div>#}
+{##}
+{#<hr>#}
+{##}
+{# 处理各个函数的flush输出，并显示 #}
+{#{% with messages = get_flashed_messages() %}#}
+{#    {% if messages %}#}
+{#        <ul>#}
+{#            {% for message in messages %}#}
+{#                <li>{{ message }}</li>#}
+{#            {% endfor %}#}
+{#        </ul>#}
+{#    {% endif %}#}
+{#{% endwith %}#}
+{##}
+{# 有各个子模板进行继承，并由自身进行处理及输出，通常是输出自身及好友发表的微博具体内容 #}
+{#{% block content %}#}
+{#{% endblock %}#}
+{#</body>#}
+{#</html>#}
+{##}
